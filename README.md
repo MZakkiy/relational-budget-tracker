@@ -78,7 +78,56 @@ The database relies heavily on one-to-many relationships to maintain referential
 * **Users to Budgets (1:N):** A user can set multiple budgets.
 * **Categories to Budgets (1:N):** A category can have multiple budget targets set across different timeframes (e.g., April vs. May).
 
-*(Include an image of your Entity Relationship Diagram here if you generated one!)*
+```mermaid
+erDiagram
+    users {
+        integer id PK
+        text first_name
+        text last_name
+        text email UK
+    }
+
+    accounts {
+        integer id PK
+        integer user_id FK
+        text account_name
+        text account_type
+        real balance
+    }
+
+    categories {
+        integer id PK
+        text name
+        text type
+    }
+
+    transactions {
+        integer id PK
+        integer account_id FK
+        integer category_id FK
+        real amount
+        datetime transaction_date
+        text description
+    }
+
+    budgets {
+        integer id PK
+        integer user_id FK
+        integer category_id FK
+        real target_amount
+        date start_date
+        date end_date
+    }
+
+    %% Relationships
+    users ||--o{ accounts : "owns"
+    users ||--o{ budgets : "sets"
+    
+    accounts ||--o{ transactions : "contains"
+    
+    categories ||--o{ transactions : "classifies"
+    categories ||--o{ budgets : "limits"
+```
 
 ## Optimizations
 
